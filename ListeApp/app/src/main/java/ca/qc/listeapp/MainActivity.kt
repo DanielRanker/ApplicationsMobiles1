@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ca.qc.listeapp.ui.theme.ListeAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,10 +21,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ListeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                   ItemList(
                         modifier = Modifier.padding(innerPadding)
-                    )
+                   )
                 }
             }
         }
@@ -31,17 +31,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+fun ItemList(modifier: Modifier = Modifier) {
+    val items = listOf("Apples", "Bananas", "Carrots", "Dates")
+
+    androidx.compose.foundation.lazy.LazyColumn(
         modifier = modifier
-    )
+    ) {
+        items(items.size) { index ->
+            Text(
+                text = items[index],
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun ItemsListPreview() {
     ListeAppTheme {
-        Greeting("Android")
+        ItemList()
     }
 }
