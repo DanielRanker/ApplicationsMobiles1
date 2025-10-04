@@ -4,14 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import ca.qc.listeapp.ui.theme.ListeAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,9 +21,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ListeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   ItemList(
+                    ItemListScreen(
                         modifier = Modifier.padding(innerPadding)
-                   )
+                    )
                 }
             }
         }
@@ -31,17 +31,46 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ItemList(modifier: Modifier = Modifier) {
-    val items = listOf("Apples", "Bananas", "Carrots", "Dates")
+fun ItemListScreen(modifier: Modifier = Modifier) {
+    var items by remember { mutableStateOf(listOf("Apples", "Bananas")) }
+    var newItem by remember { mutableStateOf("") }
 
-    androidx.compose.foundation.lazy.LazyColumn(
+    Column(
         modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        items(items.size) { index ->
-            Text(
-                text = items[index],
-                modifier = Modifier.padding(16.dp)
+        // Input Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TextField(
+                value = newItem,
+                onValueChange = { newItem = it },
+                label = { Text("New item") },
+                modifier = Modifier.weight(1f)
             )
+            Button(
+                onClick = {
+                    if (newItem.isNotBlank()) {
+                        items = items + newItem
+                        newItem = ""
+                    }
+                }
+            ) {
+                Text("Add")
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(){
+            items(items.size){ index ->
+                Text(
+                    text = items[index],
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }
@@ -50,6 +79,6 @@ fun ItemList(modifier: Modifier = Modifier) {
 @Composable
 fun ItemsListPreview() {
     ListeAppTheme {
-        ItemList()
+        ItemListScreen()
     }
 }
